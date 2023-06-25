@@ -1,0 +1,88 @@
+<!-- view navigation -->
+<div class="page-nav artists-nav">
+  <a class="page-nav-items" href="#/albums">Albums</a>
+  <a class="page-nav-items active" href>Artists</a>
+  <a class="page-nav-items" href="#/albums/songs">Songs</a>
+  
+  <!-- view navigation dropdown -->
+  <span class="page-nav-items page-nav-dropdown">
+    <span class="dropdown" on-toggle="toggled(open)">
+      <a class="dropdown-toggle" href>
+        {{orderProp | capitalizeFilter}} <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-right">
+        <li ng-repeat="option in options">
+          <a ng-click="order(option)" href>{{option}}</a>
+        </li>
+      </ul>
+    </span>
+  </span>
+</div>
+
+<!-- artist view -->
+<div class="artist-view" ng-init="toggled = false" window-height>
+  <div class="artist-list-container" ng-style="fitToWindow(height)">
+    
+    <!-- artists lists -->
+    <table class="table artist-list table-hover col-xs-12 col-sm-12 col-md-12">
+      <tbody>
+        <td ng-click="clearAlbumsByArtist()">
+          <div>All Artists</div>
+        </td>
+        <tr ng-repeat="artist in artists | filter:query | orderBy:'toString()'">
+          <td ng-click="viewAlbumsBy(artist)">
+            <div ng-style="albumsByArtist && albumsByArtist[0].artist === artist && {color: '#1daae5'}">{{artist}}</div>
+          </td>
+        </tr>
+      </tbody>
+    </table> 
+    
+  </div>
+  
+  <div class="albums-by-artist-container" ng-class="{'move-on-toggle' : toggled}" ng-style="fitToWindow(height)">
+    
+    <!-- album artist and album count -->
+    <div class="album-artist-container col-xs-12 col-sm-12 col-md-12">
+      <div class="album-artist">
+        <a class="artist-list-toggle glyphicon glyphicon-chevron-right" ng-hide="toggled" ng-click="toggleArtistList()" href></a>
+        <a class="artist-list-toggle glyphicon glyphicon-chevron-left" ng-show="toggled" ng-click="toggleArtistList()" href></a>
+        <div class="artist">{{albumsByArtist ? albumsByArtist[0].artist : 'All Artists'}}</div>
+        <div class="album-count">{{albumCount()}}</div>
+      </div>
+    </div>
+    
+    <!-- albums by artist -->
+    <table class="table albums-by-artist col-xs-12 col-sm-12 col-md-12">
+      <tbody>
+        <tr ng-repeat="album in getAlbums() | filter:query | orderBy:orderProp:reverse">
+          <td>
+            
+            <!-- album artwork -->
+            <a class="thumbnail" href="#/albums/{{album.title}}">
+              <img ng-src="{{album.artwork}}" place-holder="{{placeholder}}"/>
+            </a>
+            
+          </td>
+          
+          <td class="col-xs-12 col-sm-12 col-md-12">
+            
+            <!-- album -->
+            <div class="album-title-container">
+              <a class="title" href="#/albums/{{album.title}}">{{album.title}}</a>
+              <p class="year" href>{{album.year}}</p>
+            </div>
+            
+            <!-- tracklisting -->
+            <ol class="tracks">
+              <li ng-repeat="track in album.tracks | filter:query">
+                <p>{{'\u00A0'}} {{track}}</p>
+              </li>
+            </ol>
+            
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </div>
+</div>
